@@ -1,4 +1,4 @@
-# Asteroid Madness
+# Meteor Madness
 
 Submission for the NASA Space Apps Challenge 2025 (super scuffed)
 

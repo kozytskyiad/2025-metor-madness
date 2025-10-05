@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def main():
-	texture_file = 'starfield-small.jpg'
+	texture_file = 'images/starfield-small.jpg'
 	positions = np.array([[0,0,0],[1,0,0]], dtype=np.float64)
 	velocities = np.array([[0,0,0],[0,1.5,0.1]], dtype=np.float64)
 	masses = np.array([20,1], dtype=np.float64)
@@ -50,7 +50,7 @@ def main():
 		auto_play=False
 	)
 
-	earth_img = Image.open('world.topo.bathy.jpg')
+	earth_img = Image.open('images/world.topo.bathy.jpg')
 	nw = 500
 	nh = int(nw / earth_img.width * earth_img.height)
 	earth_img = earth_img.resize((nw, nh), Image.LANCZOS)

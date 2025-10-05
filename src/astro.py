@@ -92,5 +92,11 @@ solar_system_data = {
 		'mass_mE': 1.02413e26 / mE_kg,
 		'radius_km': 24622
 	}
+
+	'4 Vesta'_: {
+		'id': 4953,
+		'mass_mE': 6.4e-12,
+		'radius_km': 1.5
+	}
 }
 

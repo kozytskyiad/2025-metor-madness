@@ -2,6 +2,7 @@ import plotly.graph_objects as go
 from typing import List
 from nbody import Body
 
+
 def init_frame(figure: go.Figure, bodies: List[Body]) -> None:
 	for idx, body in enumerate(bodies):
 		figure.add_trace(go.Scatter3d(
@@ -57,3 +58,4 @@ def gen_frames(init: List[Body], history: List[List[Body]]) -> List[go.Frame]:
 		frames.append(go.Frame(data=frame_data, name=f'frame{i}'))
 
 	return frames
+

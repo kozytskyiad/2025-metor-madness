@@ -3,6 +3,7 @@ import plotly.io as pio
 import plotly.graph_objects as go
 from PIL import Image
 
+
 bg_layout = dict(
 	scene=dict(
 		xaxis=dict(visible=False),
@@ -59,6 +60,7 @@ float_layout = dict(
 	margin=dict(l=10, r=10, t=10, b=10),
 	showlegend=False
 )
+
 
 def spherical_mesh(res_phi=180, res_theta=360):
 	phi = np.linspace(0, np.pi, res_phi)

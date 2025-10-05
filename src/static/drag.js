@@ -1,4 +1,3 @@
-// Make the floating window draggable by mouse
 (function() {
 	const dragItem = document.getElementById("floatingWindow");
 	let active = false;

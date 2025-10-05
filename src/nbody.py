@@ -4,6 +4,7 @@ from scipy.spatial import distance
 from dataclasses import dataclass
 from typing import List, Tuple, Optional
 
+
 @dataclass
 class Simulation:
 	G: float = 6.67430e-11
@@ -24,6 +25,7 @@ class Body:
 
 	def __ne__(self, other):
 		return not self.__eq__(other)
+
 
 def nbody_step(
 	bodies: List[Body],
@@ -68,11 +70,6 @@ def nbody_sim(
 		ret.append(cur)
 
 	return ret
-
-def intersects(
-	history: List[List[Body]]
-) -> List[NDArray[np.float64]]:
-	ret: List[NDArray[np.float64]]
 
 def _line_sphere_roots(
 	ray_origin: NDArray[np.float64],

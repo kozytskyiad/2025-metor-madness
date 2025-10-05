@@ -8,28 +8,18 @@ from PIL import Image
 from nbody import Body, Simulation, nbody_sim
 from skybox import skybox, bg_layout, float_layout
 from animation import init_frame, gen_frames
+from astro import get_current_coords
+
 
 app = Flask(__name__)
 
 @app.route('/')
 def main():
 	texture_file = 'images/starfield-small.jpg'
-	positions = np.array([[0,0,0],[1,0,0]], dtype=np.float64)
-	velocities = np.array([[0,0,0],[0,1.5,0.1]], dtype=np.float64)
-	masses = np.array([20,1], dtype=np.float64)
 
-	bodies: List[Body] = []
-	for idx, (pos, vel, m) in enumerate(zip(positions, velocities, masses)):
-		bodies.append(Body(
-			position=pos,
-			velocity=vel,
-			rotation=0,
-			mass=m,
-			radius=1.0,
-			name='Foo' + str(idx)
-		))
+	bodies: List[Body] = get_current_coords()
 
-	param: Simulation = Simulation(G=0.6, dt=0.5)
+	param: Simulation = Simulation(G=1.4e-9, dt=1)
 	snapshots: List[List[Body]] = nbody_sim(bodies, 50, param)
 
 	# Plotting
@@ -65,6 +55,7 @@ def main():
 		background_plot=bg_div,
 		floating_plot=float_div
 	)
+
 
 if __name__=='__main__':
 	app.run(debug=True)

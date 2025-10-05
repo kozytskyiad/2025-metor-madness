@@ -3,6 +3,63 @@ import plotly.io as pio
 import plotly.graph_objects as go
 from PIL import Image
 
+bg_layout = dict(
+	scene=dict(
+		xaxis=dict(visible=False),
+		yaxis=dict(visible=False),
+		zaxis=dict(visible=False),
+		camera=dict(eye=dict(x=0.1, y=0.1, z=0.1)),
+		aspectmode='data'
+	),
+	autosize=True,
+	margin=dict(l=0, r=0, t=0, b=0),
+	paper_bgcolor='black',
+	showlegend=False,
+	updatemenus=[dict(
+		type='buttons',
+		showactive=False,
+		y=1,
+		x=0,
+		xanchor='left',
+		yanchor='top',
+		buttons=[
+			dict(
+				label='Play',
+				method='animate',
+				args=[None, dict(
+					frame=dict(duration=500, redraw=True),
+					fromcurrent=True,
+					transition=dict(duration=100)
+				)]
+			),
+			dict(
+				label='Pause',
+				method='animate',
+				args=[None, dict(
+					frame=dict(duration=0, redraw=False),
+					mode='immediate',
+					transition=dict(duration=0)
+				)]
+			)
+		]
+	)]
+)
+
+float_layout = dict(
+	scene=dict(
+		xaxis=dict(visible=False),
+		yaxis=dict(visible=False),
+		zaxis=dict(visible=False),
+		camera=dict(eye=dict(x=0.1, y=0.1, z=0.1)),
+		aspectmode='data'
+	),
+	xaxis=dict(fixedrange=True),
+	yaxis=dict(fixedrange=True),
+	autosize=True,
+	margin=dict(l=10, r=10, t=10, b=10),
+	showlegend=False
+)
+
 def spherical_mesh(res_phi=180, res_theta=360):
 	phi = np.linspace(0, np.pi, res_phi)
 	theta = np.linspace(0, 2*np.pi, res_theta)

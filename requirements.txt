@@ -1,4 +1,6 @@
 numpy
+scipy
+pyopencl
 plotly
 pillow
-pyopencl
+flask

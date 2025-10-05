@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    /* Fullscreen background plot div */
+    #backgroundPlot {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 1;
+      background-color: black;
+      overflow: hidden;
+    }
+
+    #backgroundPlot > div {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Floating window plot div */
+    #floatingWindow {
+      position: fixed;
+      top: 50px; left: 50px;
+      background: #eee;
+      border: 2px solid black;
+      box-shadow: 0 0 10px rgba(0,0,0,0.7);
+      z-index: 10;
+      resize: both;
+      overflow: hidden;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="backgroundPlot">{{ background_plot|safe }}</div>
+  <div id="floatingWindow">{{ floating_plot|safe }}</div>
+  <script src="{{ url_for('static', filename='drag.js') }}"></script>
+</body>
+</html>
+

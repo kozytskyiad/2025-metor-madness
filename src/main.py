@@ -2,10 +2,16 @@ import numpy as np
 from typing import List
 import plotly.io as pio
 import plotly.graph_objects as go
+from flask import Flask, render_template
+from PIL import Image
 
 from nbody import Body, Simulation, nbody_sim
-from skybox import skybox
+from skybox import skybox, bg_layout, float_layout
+from animation import init_frame, gen_frames
 
+app = Flask(__name__)
+
+@app.route('/')
 def main():
 	texture_file = 'starfield-small.jpg'
 	positions = np.array([[0,0,0],[1,0,0]], dtype=np.float64)
@@ -17,6 +23,7 @@ def main():
 		bodies.append(Body(
 			position=pos,
 			velocity=vel,
+			rotation=0,
 			mass=m,
 			radius=1.0,
 			name='Foo' + str(idx)
@@ -27,106 +34,37 @@ def main():
 
 	# Plotting
 
-	fig = go.Figure()
+	bg_fig = go.Figure()
 	
-	for idx, body in enumerate(bodies):
-		fig.add_trace(go.Scatter3d(
-			x=[body.position[0]], y=[body.position[1]], z=[body.position[2]],
-			mode='markers',
-			marker=dict(size=6),
-			name=body.name,
-			hovertemplate=f'<b>Body: {body.name}</b>'
-		))
-		fig.add_trace(go.Scatter3d(
-			x=[], y=[], z=[],
-			mode='lines',
-			line=dict(width=3),
-			showlegend=False,
-			customdata=[idx],
-			hovertemplate='<extra></extra>'
-		))
+	init_frame(bg_fig, bodies)
 
-	frames = []
+	frames = gen_frames(bodies, snapshots)
 
-	full_paths = [[] for _ in bodies]
-	for s in snapshots:
-		for idx, body in enumerate(s):
-			full_paths[idx].append(body.position)
+	skybox(bg_fig, texture_file)
+	bg_fig.update_layout(bg_layout)
+	bg_fig.update(frames=frames)
 
-	for i, s in enumerate(snapshots):
-		frame_data = []
-
-		for j, body in enumerate(s):
-			frame_data.append(go.Scatter3d(
-				x=[body.position[0]],
-				y=[body.position[1]],
-				z=[body.position[2]],
-				mode='markers',
-				marker=dict(size=6),
-				name=bodies[j].name
-			))
-
-			path_x = [pos[0] for pos in full_paths[j][:i+1]]
-			path_y = [pos[1] for pos in full_paths[j][:i+1]]
-			path_z = [pos[2] for pos in full_paths[j][:i+1]]
-
-			frame_data.append(go.Scatter3d(
-				x=path_x,
-				y=path_y,
-				z=path_z,
-				mode='lines',
-				line=dict(width=3),
-				showlegend=False
-			))
-
-		frames.append(go.Frame(data=frame_data, name=f'frame{i}'))
-
-	skybox(fig, texture_file)
-
-	fig.update_layout(
-		scene=dict(
-			xaxis=dict(visible=False),
-			yaxis=dict(visible=False),
-			zaxis=dict(visible=False),
-			camera=dict(eye=dict(x=0.1, y=0.1, z=0.1)),
-			aspectmode='data'
-		),
-		margin=dict(l=0, r=0, t=0, b=0),
-		paper_bgcolor='black',
-		showlegend=False,
-		updatemenus=[dict(
-			type='buttons',
-			showactive=False,
-			y=1,
-			x=0,
-			xanchor='left',
-			yanchor='top',
-			buttons=[
-				dict(
-					label='Play',
-					method='animate',
-					args=[None, dict(
-						frame=dict(duration=500, redraw=True),
-						fromcurrent=True,
-						transition=dict(duration=100)
-					)]
-				),
-				dict(
-					label='Pause',
-					method='animate',
-					args=[None, dict(
-						frame=dict(duration=0, redraw=False),
-						mode='immediate',
-						transition=dict(duration=0)
-					)]
-				)
-			]
-		)]
+	bg_div = bg_fig.to_html(
+		full_html=False,
+		include_plotlyjs='cdn',
+		auto_play=False
 	)
 
-	fig.update(frames=frames)
+	earth_img = Image.open('world.topo.bathy.jpg')
+	nw = 500
+	nh = int(nw / earth_img.width * earth_img.height)
+	earth_img = earth_img.resize((nw, nh), Image.LANCZOS)
 
-	fig.show()
+	float_fig = go.Figure(go.Image(z=earth_img))
+	float_fig.update_layout(float_layout)
+
+	float_div = float_fig.to_html(full_html=False, include_plotlyjs=False)
+
+	return render_template(
+		'index.html',
+		background_plot=bg_div,
+		floating_plot=float_div
+	)
 
 if __name__=='__main__':
-	main()
+	app.run(debug=True)

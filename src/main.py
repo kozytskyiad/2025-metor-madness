@@ -9,8 +9,8 @@ from skybox import skybox
 def main():
 	texture_file = 'starfield-small.jpg'
 	positions = np.array([[0,0,0],[1,0,0]], dtype=np.float64)
-	velocities = np.array([[0,0,0],[0,2,0]], dtype=np.float64)
-	masses = np.array([10,1], dtype=np.float64)
+	velocities = np.array([[0,0,0],[0,1.5,0.1]], dtype=np.float64)
+	masses = np.array([20,1], dtype=np.float64)
 
 	bodies: List[Body] = []
 	for idx, (pos, vel, m) in enumerate(zip(positions, velocities, masses)):
@@ -81,8 +81,6 @@ def main():
 
 		frames.append(go.Frame(data=frame_data, name=f'frame{i}'))
 
-	fig.frames = frames
-
 	skybox(fig, texture_file)
 
 	fig.update_layout(
@@ -100,20 +98,33 @@ def main():
 			type='buttons',
 			showactive=False,
 			y=1,
-			x=0.8,
+			x=0,
 			xanchor='left',
-			yanchor='bottom',
-			buttons=[dict(
-				label='Play',
-				method='animate',
-				args=[None, dict(
-					frame=dict(duration=1, redraw=True),
-					fromcurrent=True,
-					transition=dict(duration=0)
-				)]
-			)]
+			yanchor='top',
+			buttons=[
+				dict(
+					label='Play',
+					method='animate',
+					args=[None, dict(
+						frame=dict(duration=500, redraw=True),
+						fromcurrent=True,
+						transition=dict(duration=100)
+					)]
+				),
+				dict(
+					label='Pause',
+					method='animate',
+					args=[None, dict(
+						frame=dict(duration=0, redraw=False),
+						mode='immediate',
+						transition=dict(duration=0)
+					)]
+				)
+			]
 		)]
 	)
+
+	fig.update(frames=frames)
 
 	fig.show()
 

@@ -19,7 +19,7 @@ def main():
 
 	bodies: List[Body] = get_current_coords()
 
-	param: Simulation = Simulation(G=1.4e-9, dt=1)
+	param: Simulation = Simulation(G=2.959e-4, dt=1) # G converted for AU/day
 	snapshots: List[List[Body]] = nbody_sim(bodies, 50, param)
 
 	# Plotting
